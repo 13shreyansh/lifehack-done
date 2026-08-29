@@ -1,0 +1,16 @@
+{
+  "name": "DONE Merchant Studio",
+  "short_name": "DONE",
+  "description": "Turn public merchant catalogues into sourced, reviewable agent-ready drafts.",
+  "start_url": "/merchant",
+  "display": "standalone",
+  "background_color": "#f4f5f1",
+  "theme_color": "#f4f5f1",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}

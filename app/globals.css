@@ -1,0 +1,36 @@
+:root {
+  color-scheme: light;
+  background: #f4f5f1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+html {
+  background: #f4f5f1;
+}
+
+body {
+  margin: 0;
+  color: #151714;
+  background: #f4f5f1;
+  font-family: var(--font-geist-sans), "Geist", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
