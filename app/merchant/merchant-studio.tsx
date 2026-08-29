@@ -165,9 +165,9 @@ function EmptyStudio({ url, setUrl, onImport }: { url: string; setUrl: (value: s
     <main className="merchant-empty">
       <section className="empty-hero" aria-labelledby="merchant-heading">
         <div className="hero-copy">
-          <div className="hero-kicker"><span>01</span> Merchant access</div>
-          <h1 id="merchant-heading">Make your store<br /><em>legible to agents.</em></h1>
-          <p>Paste a public storefront. DONE finds the catalogue, preserves every source, and prepares a merchant-owned draft—without an API project.</p>
+          <div className="hero-kicker">Merchant onboarding</div>
+          <h1 id="merchant-heading">Your storefront,<br />ready for agents.</h1>
+          <p>Paste a public website. DONE finds the catalogue, keeps every source attached, and prepares a draft you can review before anything is published.</p>
         </div>
 
         <form className="import-command" onSubmit={(event) => { event.preventDefault(); onImport(); }}>
@@ -204,8 +204,8 @@ function EmptyStudio({ url, setUrl, onImport }: { url: string; setUrl: (value: s
 
       <section className="read-contract" aria-label="What DONE imports">
         <div className="contract-lead">
-          <span className="contract-number">01 / 03</span>
-          <h2>One URL.<br />A reviewable catalogue.</h2>
+          <span className="contract-number">What happens next</span>
+          <h2>One URL becomes a reviewable agent catalogue.</h2>
         </div>
         <div className="contract-item">
           <Icon name="search" />
@@ -417,11 +417,11 @@ function ResultsStudio({ draft, setDraft, onNewImport }: { draft: MerchantDraft;
         </div>
       </section>
 
-      <section className="metric-strip" aria-label="Import summary">
-        <div><span>Included products</span><strong>{includedCount.toString().padStart(2, "0")}</strong><small>of {draft.products.length} detected</small></div>
-        <div><span>Approved</span><strong>{approvedCount.toString().padStart(2, "0")}</strong><small>{attentionCount} await a decision</small></div>
-        <div><span>Needs fixes</span><strong>{needsFixCount.toString().padStart(2, "0")}</strong><small>exact missing fields shown</small></div>
-        <div><span>Live import</span><strong className="time-metric">{(draft.diagnostics.durationMs / 1000).toFixed(1)} sec</strong><small>{draft.diagnostics.pagesInspected} uncached public pages</small></div>
+      <section className="summary-line" aria-label="Import summary">
+        <div><strong>{includedCount}</strong> included</div>
+        <div><strong>{approvedCount}</strong> approved</div>
+        <div className={needsFixCount ? "summary-warning" : ""}><strong>{needsFixCount}</strong> need fixes</div>
+        <p>Read {draft.diagnostics.pagesInspected} public pages live in {(draft.diagnostics.durationMs / 1000).toFixed(1)} seconds. Preview shows up to 16 products.</p>
       </section>
 
       <section className={`approval-command${approvableCount === 0 ? " approval-complete" : ""}`} aria-live="polite">
@@ -438,7 +438,7 @@ function ResultsStudio({ draft, setDraft, onNewImport }: { draft: MerchantDraft;
       <div className="workspace-grid">
         <section className="catalog-workspace" aria-labelledby="catalog-title">
           <header className="catalog-head">
-            <div><span>Imported catalogue</span><h2 id="catalog-title">Review what agents will see.</h2></div>
+            <div><span>Imported catalogue</span><h2 id="catalog-title">Review the facts before publishing.</h2></div>
             <div className="catalog-search"><Icon name="search" size={17} /><label htmlFor="catalog-search" className="sr-only">Search imported products</label><input id="catalog-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search products" /></div>
           </header>
           <div className="filter-row" role="group" aria-label="Product filters">
@@ -595,7 +595,7 @@ export function MerchantStudio() {
     <div className="merchant-app">
       <header className="merchant-nav">
         <Link className="done-wordmark" href="/merchant" aria-label="DONE Merchant Studio">DONE<span>·</span></Link>
-        <div className="nav-context"><span>Merchant Studio</span><i />Checkpoint 1</div>
+        <div className="nav-context"><span>Merchant Studio</span><i />Import and review</div>
         <div className="nav-status"><span className="status-dot" /> Independent hackathon demo</div>
       </header>
 
