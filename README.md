@@ -6,6 +6,8 @@ Checkpoint 1 is the Merchant Studio: paste a public merchant website, watch a li
 
 The product direction, exact demonstration story, trust boundaries, and human checkpoints live in [`docs/LIFEHACK_SOURCE_OF_TRUTH.md`](docs/LIFEHACK_SOURCE_OF_TRUTH.md).
 
+The current Checkpoint 1 evidence and click-by-click approval script live in [`docs/CHECKPOINT_1_VERIFICATION.md`](docs/CHECKPOINT_1_VERIFICATION.md).
+
 ## Run Merchant Studio
 
 Requires Node.js 22.13 or newer.

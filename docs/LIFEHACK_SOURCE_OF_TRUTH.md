@@ -332,7 +332,7 @@ Current verification (29 August 2026):
 - Review has a real decision state: each product is unapproved until reviewed, and **Approve all complete products** approves only included products with no missing required facts. Products needing fixes remain unapproved.
 - The desktop and phone catalogue use one document scroll, with no nested product-list scrollbar or horizontal overflow. The application root opens Merchant Studio and inherited presentation routes are not part of this repository.
 - Checkpoint 1 is implemented and technically verified, but remains awaiting Shreyansh's visual approve/change/stop decision.
-- The current visual design is **not approved**. A reference audit found overuse of tiny uppercase labels, numbered setup scaffolding, dashboard-like metric tiles, and a pale-paper/acid visual treatment. Those choices must be reconsidered before Checkpoint 1 can be called presentation-ready.
+- The first visual design was rejected after a reference audit found overuse of tiny uppercase labels, numbered setup scaffolding, dashboard-like metric tiles, and a pale-paper/acid treatment. The revised interface removes those patterns in favour of a focused merchant command, familiar review controls, restrained colour, visible provenance, and explicit approval states. The revision remains awaiting Shreyansh's visual approval.
 
 ### Checkpoint 2 - Original Site and Agent View
 
