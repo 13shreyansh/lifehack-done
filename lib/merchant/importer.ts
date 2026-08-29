@@ -97,10 +97,20 @@ function titleFromHtml(html: string) {
   return title ? stripTags(title) : null;
 }
 
+function usableDescription(value: string | null) {
+  if (!value) return null;
+  const normalized = value.trim();
+  if (!normalized) return null;
+  if (/^%[^%]+%$/.test(normalized)) return null;
+  if (/^\{\{[^}]+\}\}$/.test(normalized)) return null;
+  if (/^\$\{[^}]+\}$/.test(normalized)) return null;
+  return normalized;
+}
+
 function descriptionFromHtml(html: string) {
-  return metaContent(html, "og:description")
-    ?? metaContent(html, "description")
-    ?? metaContent(html, "twitter:description");
+  return usableDescription(metaContent(html, "og:description"))
+    ?? usableDescription(metaContent(html, "description"))
+    ?? usableDescription(metaContent(html, "twitter:description"));
 }
 
 function jsonLdObjects(html: string) {
@@ -199,7 +209,7 @@ function schemaProduct(record: JsonRecord, pageUrl: URL, html: string): Imported
   const evidence: ProductEvidence[] = [
     { field: "title", sourceUrl, sourceType: "json-ld" },
   ];
-  const schemaDescription = firstString(record.description);
+  const schemaDescription = usableDescription(firstString(record.description));
   const description = schemaDescription ?? descriptionFromHtml(html);
   if (description) evidence.push({ field: "description", sourceUrl, sourceType: schemaDescription ? "json-ld" : "html-meta" });
   if (imageUrl) evidence.push({ field: "image", sourceUrl, sourceType: "json-ld" });
@@ -225,11 +235,13 @@ function schemaProduct(record: JsonRecord, pageUrl: URL, html: string): Imported
 function metaProduct(html: string, pageUrl: URL): ImportedProduct | null {
   const type = metaContent(html, "og:type")?.toLowerCase() ?? "";
   const amount = metaContent(html, "product:price:amount") ?? metaContent(html, "og:price:amount");
-  if (!type.includes("product") && !amount && !PRODUCT_PATH_PATTERN.test(pageUrl.pathname)) return null;
+  const imageSignal = metaContent(html, "og:image");
+  const credibleProductPath = PRODUCT_PATH_PATTERN.test(pageUrl.pathname) && Boolean(imageSignal);
+  if (!type.includes("product") && !amount && !credibleProductPath) return null;
   const title = metaContent(html, "og:title") ?? titleFromHtml(html);
   if (!title) return null;
   const sourceUrl = absoluteUrl(metaContent(html, "og:url"), pageUrl) ?? pageUrl.toString();
-  const imageUrl = absoluteUrl(metaContent(html, "og:image"), pageUrl);
+  const imageUrl = absoluteUrl(imageSignal, pageUrl);
   const price = makePrice(amount, metaContent(html, "product:price:currency") ?? metaContent(html, "og:price:currency"));
   const availability = normalizeAvailability(metaContent(html, "product:availability"));
   const evidence: ProductEvidence[] = [{ field: "title", sourceUrl, sourceType: "open-graph" }];
@@ -569,7 +581,7 @@ export async function importMerchantWebsite(rawUrl: string, onProgress: Progress
     canonicalUrl: homepage.url.toString(),
     domain: homepage.url.hostname,
     merchantName: extractMerchantName(homepage.text, homepage.url),
-    description: metaContent(homepage.text, "og:description") ?? metaContent(homepage.text, "description"),
+    description: descriptionFromHtml(homepage.text),
     detectedPlatform: platform,
     retrievedAt: new Date().toISOString(),
     products: normalizedProducts,

@@ -197,7 +197,7 @@ function EmptyStudio({ url, setUrl, onImport }: { url: string; setUrl: (value: s
                 <span>S</span> Stereo <Icon name="chevron" size={14} />
               </button>
             </div>
-            <span>Live public pages · no cache · no order</span>
+            <span>Live preview · up to 16 products · no cache · no order</span>
           </div>
         </form>
       </section>
@@ -505,8 +505,8 @@ function ResultsStudio({ draft, setDraft, onNewImport }: { draft: MerchantDraft;
 
           <section className="next-gate-card">
             <span>Next human gate</span>
-            <h3>Human + Agent Views</h3>
-            <p>Publishing stays locked until you approve this merchant import and review experience.</p>
+            <h3>Original Site + Agent View</h3>
+            <p>Human View will open the merchant&apos;s original website. DONE will generate only the agent-ready view after this import is approved.</p>
             <div><i /> Checkpoint 2 intentionally unavailable</div>
           </section>
         </aside>

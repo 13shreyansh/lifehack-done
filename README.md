@@ -22,8 +22,8 @@ Open `http://localhost:3000/merchant`. The root route opens Merchant Studio.
 ```bash
 pnpm test
 pnpm lint
-pnpm typecheck
 pnpm build
+pnpm typecheck
 ```
 
 The importer reads only public HTTP(S) material, validates redirects and network destinations, respects `robots.txt`, limits response sizes and crawl breadth, and reports unsupported or blocked stores rather than bypassing their controls.
@@ -31,5 +31,6 @@ The importer reads only public HTTP(S) material, validates redirects and network
 ## Current boundaries
 
 - Merchant Studio is implemented and awaiting the Checkpoint 1 visual approval decision.
-- Human and Agent Views, DONE Shopper, the visible browser agent, WebAuthn approval, and the simulated Visa authorization belong to later checkpoints.
+- In Checkpoint 2, Human View will open the merchant's original website; DONE will generate only the separate agent-ready view and machine-readable capabilities.
+- DONE Shopper, the visible browser agent, WebAuthn approval, and the simulated Visa authorization belong to later checkpoints.
 - No real order or payment occurs in Checkpoint 1.

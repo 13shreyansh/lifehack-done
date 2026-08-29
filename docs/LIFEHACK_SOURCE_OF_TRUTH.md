@@ -66,7 +66,7 @@ These decisions define the product:
 | Layer | What it does | What judges can inspect |
 |---|---|---|
 | Merchant Studio | Accepts a public website URL, extracts commerce information, and creates an agent-ready layer | Crawl progress, imported products, source URLs, confidence, and publish action |
-| Agent-ready merchant | Exposes normalized catalog, policies, fulfillment, cart, and simulated checkout on our domain | Human preview, agent view, discovery profile, and structured responses |
+| Agent-ready merchant | Exposes normalized catalog, policies, fulfillment, cart, and simulated checkout on our domain | Link to the merchant's original human website, DONE-generated agent view, discovery profile, and structured responses |
 | DONE Shopper | Holds the natural conversation and keeps the customer informed | Request, clarification, progress, comparison, approval, and receipt |
 | Browser agent | Searches and visits real public pages using a visible Chrome session | Live Chrome window, current URLs, timestamps, and extracted evidence |
 | Decision engine | Applies hard constraints and ranks the valid candidates | Rejections, trade-offs, scoring inputs, and explanation |
@@ -104,9 +104,17 @@ The canonical UI reference pack is `brians-ai-ui-reference-pack/IMPORTANT_POSTS.
 2. DONE scans public commerce pages using sitemaps, structured data, known commerce-platform formats, and browser extraction where necessary.
 3. It identifies products, variants, prices, availability, images, categories, policies, fulfillment information, and source URLs.
 4. It normalizes those facts into a category-aware catalog and flags missing or uncertain fields.
-5. The user previews a familiar human view and a separate agent view.
-6. One publish action creates a public, agent-ready layer on a DONE-owned URL.
-7. DONE generates a discovery profile plus catalog, cart, and simulated-checkout capabilities.
+5. **Human View** opens the merchant's original public website in a new tab. DONE does not clone, restyle, or present that site as its own.
+6. **Agent View** opens the DONE-generated, agent-ready representation on a DONE-owned URL.
+7. One publish action creates that public, agent-ready layer on a DONE-owned URL.
+8. DONE generates a discovery profile plus catalog, cart, and simulated-checkout capabilities.
+
+The Agent View is not a raw Markdown page and it is not a copy of the human storefront. It has two synchronized representations:
+
+- a judge-readable visual profile showing normalized products, prices, availability, provenance, refresh time, policies, and supported actions; and
+- canonical machine-readable discovery and capability responses for catalog search, product lookup, cart creation, and simulated checkout.
+
+Markdown such as `agents.md` can be generated as a readable orientation document, but it is not the catalog source of truth. Structured responses and their schemas are authoritative.
 
 The hackathon import is allowed to run without the merchant operating the studio. In that mode, the published page must visibly say:
 
@@ -250,7 +258,7 @@ This is the full target story. If the judge gives less time, use the compressed 
 |---|---|---|
 | 0:00-0:20 | Hook: “The web is built for humans. DONE makes any merchant ready for agents, then lets a customer buy through one trusted conversation.” | Clear problem and product |
 | 0:20-0:55 | Paste a real merchant URL. The import visibly finds products, prices, variants, sources, and missing fields. | No-code merchant onboarding and real data |
-| 0:55-1:15 | Toggle Human View / Agent View; open the published profile and one catalog response. Mention Jaben as evidence that this pattern already exists. | Agent-ready merchant layer and scalability |
+| 0:55-1:15 | Open Human View, which launches the merchant's original website; then open DONE's generated Agent View, discovery profile, and one catalog response. Mention Jaben as evidence that this pattern already exists. | Agent-ready merchant layer and scalability |
 | 1:15-1:35 | Open DONE Chat on iPhone and send the headphones request. Answer at most one clarification. | Simple customer experience |
 | 1:35-2:35 | Scout searches in visible Chrome; Verifier rechecks the best candidates and the imported merchant. The phone shows concise live progress. | Real adaptive work, not a hard-coded carousel |
 | 2:35-3:05 | DONE shows a compact comparison, rejects failures, and recommends the current best option with sources. | Discovery, recommendation, comparison, decision |
@@ -267,7 +275,7 @@ Use a previously imported merchant, but rerun a short live refresh so the data i
 | Time | What happens |
 |---|---|
 | 0:00-0:15 | Problem and one-line promise |
-| 0:15-0:40 | URL import/refresh plus Human View / Agent View |
+| 0:15-0:40 | URL import/refresh; open the original merchant website, then DONE's generated Agent View |
 | 0:40-0:55 | Shopper request and one clarification |
 | 0:55-1:35 | Visible Chrome discovery and verification |
 | 1:35-1:55 | Evidence-backed comparison and recommendation |
@@ -284,7 +292,7 @@ Development follows the same order in which judges experience the product. Each 
 | Checkpoint | What Shreyansh visually inspects | Approval condition |
 |---|---|---|
 | 1. Merchant ready | Paste the selected real merchant URL; watch ingestion; inspect real products, prices, variants, images, source links, warnings, draft edits, and inclusion controls | The merchant experience is polished, truthful, convincingly no-code, and usable without editing source code |
-| 2. Human and Agent Views | Open the generated storefront; switch to the agent view; inspect catalog and cart responses; compare a product against its original source | Both views are attractive, consistent, and immediately explain why the agent layer matters |
+| 2. Original Site and Agent View | Open the merchant's original website through Human View; open DONE's generated Agent View; inspect catalog and cart responses; compare a product against its source | The boundary is unmistakable: the human experience remains the merchant's, while DONE supplies a useful and trustworthy interface for agents |
 | 3. Shopper interface | Open DONE Chat on iPhone and Mac; inspect the conversation, composer, live-computer panel, comparison card, approval card, and receipt design | The interface feels premium and Grok Bot-simple before agent logic is connected |
 | 4. Conversation and live research | Send the real request; answer one clarification; watch Chrome search, visit pages, and stream evidence into the conversation | A materially different request causes different research, proving adaptive behavior rather than a fixed script |
 | 5. Trust and buying simulator | Inspect the transaction preview; use genuine Face ID/passkey; watch mandate approval, simulated authorization, receipt, and changed-cart rejection | The valid purchase succeeds exactly once while tampering, replay, expiry, and changed totals visibly fail |
@@ -318,15 +326,17 @@ Checkpoint 1 is approved only after Shreyansh can paste the URL, inspect several
 Current verification (29 August 2026):
 
 - The importer is general-purpose rather than TREOO-specific. It reads live public storefronts through structured data, page metadata, sitemaps, and exposed commerce-platform catalogues; it does not promise access when a merchant blocks automation or exposes no usable public product facts.
+- Checkpoint 1 intentionally imports at most 16 products as a fast, reviewable live preview. Sixteen is a ceiling, not a promised result count or the future production-catalogue architecture; production ingestion requires pagination and background refresh. The interface must state this limit instead of implying a complete catalogue.
 - Fresh, uncached end-to-end imports were verified against both TREOO and Stereo Electronics. Stereo previously failed because DONE incorrectly interpreted a wildcard `robots.txt` rule as a site-wide block; that parser defect is fixed and covered by a regression test.
 - Imported descriptions now use the product record first and the live product page metadata as a fallback. Missing fields remain explicit instead of being invented.
 - Review has a real decision state: each product is unapproved until reviewed, and **Approve all complete products** approves only included products with no missing required facts. Products needing fixes remain unapproved.
 - The desktop and phone catalogue use one document scroll, with no nested product-list scrollbar or horizontal overflow. The application root opens Merchant Studio and inherited presentation routes are not part of this repository.
 - Checkpoint 1 is implemented and technically verified, but remains awaiting Shreyansh's visual approve/change/stop decision.
+- The current visual design is **not approved**. A reference audit found overuse of tiny uppercase labels, numbered setup scaffolding, dashboard-like metric tiles, and a pale-paper/acid visual treatment. Those choices must be reconsidered before Checkpoint 1 can be called presentation-ready.
 
-### Checkpoint 2 - Human View and Agent View
+### Checkpoint 2 - Original Site and Agent View
 
-Checkpoint 2 adds the public human storefront, agent-readable view, generated discovery information, catalog search, product lookup, cart contract, and simulated-checkout contract. The same product must remain consistent across its source, human view, and agent view. Jaben appears only as a reference for the pattern.
+Checkpoint 2 makes **Human View** a direct link to the merchant's original public website and adds the DONE-generated Agent View, discovery information, catalog search, product lookup, cart contract, and simulated-checkout contract. DONE does not generate or host a replacement human storefront. The same product must remain consistent between its original source and the visual and machine-readable Agent View. Jaben appears only as a reference for the pattern.
 
 ### Checkpoint 3 - Shopper interface
 

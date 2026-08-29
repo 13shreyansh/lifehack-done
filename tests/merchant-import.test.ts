@@ -67,6 +67,28 @@ test("uses page description metadata when product JSON-LD leaves description emp
   assert.ok(!product.warnings.includes("Description is missing"));
 });
 
+test("rejects unresolved template placeholders as product descriptions", () => {
+  const html = `<!doctype html><html><head>
+    <meta property="og:type" content="product">
+    <meta property="og:title" content="Sony Product Portal">
+    <meta property="og:description" content="%TMPL_DESCRIPTION%">
+  </head></html>`;
+
+  const [product] = extractProductsFromHtml(html, "https://merchant.example/products/sony-portal");
+  assert.equal(product.description, null);
+  assert.ok(product.warnings.includes("Description is missing"));
+  assert.ok(!product.evidence.some((evidence) => evidence.field === "description"));
+});
+
+test("does not treat a product-listing path without commerce evidence as a product", () => {
+  const html = `<!doctype html><html><head>
+    <meta property="og:title" content="Products and Services">
+    <meta property="og:description" content="Corporate product divisions">
+  </head></html>`;
+
+  assert.deepEqual(extractProductsFromHtml(html, "https://merchant.example/company/products/"), []);
+});
+
 test("applies robots wildcards and longest-match allow rules correctly", () => {
   const robots = parseRobots(`
     User-agent: *
