@@ -165,15 +165,23 @@ function EmptyStudio({ url, setUrl, onImport }: { url: string; setUrl: (value: s
     <main className="merchant-empty">
       <section className="empty-hero" aria-labelledby="merchant-heading">
         <div className="hero-copy">
-          <div className="hero-kicker">Merchant onboarding</div>
-          <h1 id="merchant-heading">Your storefront,<br />ready for agents.</h1>
-          <p>Paste a public website. DONE finds the catalogue, keeps every source attached, and prepares a draft you can review before anything is published.</p>
+          <div className="hero-kicker"><span>New</span> Catalogue setup</div>
+          <h1 id="merchant-heading">Connect a storefront</h1>
+          <p>DONE reads a public store, extracts the products it can prove, and creates a merchant-owned draft. You review every item before an agent can use it.</p>
+          <ul className="import-principles" aria-label="Import safeguards">
+            <li><Icon name="shield" size={16} /><span><strong>Public pages only</strong> No login or bot protection is bypassed.</span></li>
+            <li><Icon name="link" size={16} /><span><strong>Evidence attached</strong> Each product links back to its source.</span></li>
+            <li><Icon name="check" size={16} /><span><strong>Human approval</strong> Missing facts stay visible until you decide.</span></li>
+          </ul>
         </div>
 
         <form className="import-command" onSubmit={(event) => { event.preventDefault(); onImport(); }}>
-          <label htmlFor="merchant-url">Merchant website</label>
+          <div className="command-heading">
+            <div><span>Storefront URL</span><strong>Where should DONE begin?</strong></div>
+            <Icon name="globe" size={20} />
+          </div>
+          <label htmlFor="merchant-url" className="sr-only">Merchant website</label>
           <div className="command-row">
-            <span className="command-icon"><Icon name="globe" size={20} /></span>
             <input
               id="merchant-url"
               value={url}
@@ -185,41 +193,42 @@ function EmptyStudio({ url, setUrl, onImport }: { url: string; setUrl: (value: s
               placeholder="https://your-store.com"
             />
             <button type="submit" disabled={!url.trim()}>
-              Build merchant draft <Icon name="arrow" size={17} />
+              Start import <Icon name="arrow" size={17} />
             </button>
           </div>
           <div className="command-foot">
-            <div className="demo-sources" aria-label="Real merchant examples">
+            <span>Try a public storefront</span>
+            <div className="demo-sources" aria-label="Public merchant examples">
               <button type="button" className="demo-source" onClick={() => setUrl(DEMO_MERCHANT)}>
-                <span>T</span> TREOO <Icon name="chevron" size={14} />
+                TREOO <Icon name="chevron" size={14} />
               </button>
               <button type="button" className="demo-source" onClick={() => setUrl(SHOPIFY_MERCHANT)}>
-                <span>S</span> Stereo <Icon name="chevron" size={14} />
+                Stereo <Icon name="chevron" size={14} />
               </button>
             </div>
-            <span>Live preview · up to 16 products · no cache · no order</span>
           </div>
+          <p className="command-disclosure"><Icon name="shield" size={14} /> Live preview · up to 16 products · no result cache · no order is placed</p>
         </form>
       </section>
 
       <section className="read-contract" aria-label="What DONE imports">
         <div className="contract-lead">
-          <span className="contract-number">What happens next</span>
-          <h2>One URL becomes a reviewable agent catalogue.</h2>
+          <span className="contract-number">Import contract</span>
+          <h2>DONE reports what it finds—and what it cannot.</h2>
         </div>
         <div className="contract-item">
           <Icon name="search" />
-          <h3>Discover</h3>
+          <h3>Find products</h3>
           <p>Sitemaps, public product routes, structured data, and known commerce formats.</p>
         </div>
         <div className="contract-item">
           <Icon name="link" />
-          <h3>Preserve</h3>
+          <h3>Keep provenance</h3>
           <p>Every material field keeps its source page and retrieval time.</p>
         </div>
         <div className="contract-item">
           <Icon name="shield" />
-          <h3>Review</h3>
+          <h3>Gate publication</h3>
           <p>Nothing publishes silently. Missing facts stay visible instead of being invented.</p>
         </div>
       </section>
@@ -293,6 +302,8 @@ function ProductEditor({ product, onSave, onClose }: { product: DraftProduct; on
   const dialogRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeButtonRef.current?.focus();
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -316,6 +327,7 @@ function ProductEditor({ product, onSave, onClose }: { product: DraftProduct; on
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
+      document.body.style.overflow = previousBodyOverflow;
       window.removeEventListener("keydown", handleKeyDown);
       previouslyFocused?.focus();
     };
@@ -595,8 +607,14 @@ export function MerchantStudio() {
     <div className="merchant-app">
       <header className="merchant-nav">
         <Link className="done-wordmark" href="/merchant" aria-label="DONE Merchant Studio">DONE<span>·</span></Link>
-        <div className="nav-context"><span>Merchant Studio</span><i />Import and review</div>
-        <div className="nav-status"><span className="status-dot" /> Independent hackathon demo</div>
+        <nav className="nav-steps" aria-label="Merchant setup progress">
+          <span className={visibleStatus === "empty" || visibleStatus === "importing" || visibleStatus === "error" ? "active" : "complete"}>{visibleStatus === "results" ? <Icon name="check" size={13} /> : null} Import</span>
+          <i />
+          <span className={visibleStatus === "results" ? "active" : "pending"}>Review</span>
+          <i />
+          <span className="pending">Publish</span>
+        </nav>
+        <div className="nav-status"><span className="status-dot" /> Independent demo</div>
       </header>
 
       {visibleStatus === "empty" ? <EmptyStudio url={url} setUrl={setUrl} onImport={() => void startImport()} /> : null}
@@ -604,7 +622,7 @@ export function MerchantStudio() {
       {visibleStatus === "error" && failure ? <ErrorStudio failure={failure} url={url} setUrl={setUrl} onRetry={() => void startImport()} onReset={newImport} /> : null}
       {visibleStatus === "results" && storedDraft ? <ResultsStudio draft={storedDraft} setDraft={storeDraft} onNewImport={newImport} /> : null}
 
-      <footer className="merchant-footer"><span>DONE / PTJM98</span><p>Public commerce facts become a reviewable merchant draft. Missing data stays missing until a human decides.</p><span>LifeHack 2026</span></footer>
+      <footer className="merchant-footer"><span>DONE · PTJM98</span><p>Public commerce facts become a reviewable merchant draft. Missing data stays missing until a human decides.</p><span>LifeHack 2026</span></footer>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  background: #f4f5f1;
+  background: oklch(0.975 0.004 155);
 }
 
 * {
@@ -13,13 +13,13 @@ body {
 }
 
 html {
-  background: #f4f5f1;
+  background: oklch(0.975 0.004 155);
 }
 
 body {
   margin: 0;
-  color: #151714;
-  background: #f4f5f1;
+  color: oklch(0.205 0.018 155);
+  background: oklch(0.975 0.004 155);
   font-family: var(--font-geist-sans), "Geist", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
